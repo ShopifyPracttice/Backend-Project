@@ -69,13 +69,22 @@ app.use(express.json())
 const secretKey = "secret123";
 const users = [];
 
-app.get("/all-books", (req, res)=>{
-    try{
-      res.json(shop)
-    }catch(err){
+async function fetchData() {
+    return new Promise((resolve) => {
+         setTimeout(() => {
+            resolve(shop);
+        }, 1000);  
+    });
+}
+
+app.get("/all-books", async (req, res) => {
+    try {
+        const data = await fetchData();  
+        res.json(data);
+    } catch (err) {
         console.error(err);
     }
-})
+});
 
 app.get("/book-detail",  (req, res)=>{
     try{
