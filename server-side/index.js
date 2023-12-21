@@ -179,7 +179,7 @@ const authenticateJWT = (req, res, next) => {
     const token = req.header("x-auth-token");
 
     if (!token) {
-        return res.status(401).json({ message: "Login First to Add any Review or Comment" });
+        return res.json({ message: "Login First to Add any Review or Comment" });
     }
 
     try {
@@ -187,7 +187,7 @@ const authenticateJWT = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        res.status(403).json({ message: "Invalid token." });
+        res.json({ message: "Invalid token." });
     }
 };
 app.post("/add-review", authenticateJWT, (req, res) => {
@@ -208,7 +208,7 @@ app.post("/add-review", authenticateJWT, (req, res) => {
         res.json({ message: "Review added successfully", review: { Review: reviewText, userName: username } });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.json({ error: 'Internal Server Error' });
     }
 });
 app.get("/user-comments", authenticateJWT, (req, res) => {
@@ -227,7 +227,7 @@ app.get("/user-comments", authenticateJWT, (req, res) => {
         res.json(userComments);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.json({ error: 'Internal Server Error' });
     }
 });
 
@@ -240,14 +240,14 @@ app.put("/modify-review/:ISBN", authenticateJWT, (req, res) => {
         const book = shop.find(book => book.ISBN === ISBN);
 
         if (!book) {
-            res.status(404).json({ message: "Book not found" });
+            res.json({ message: "Book not found" });
             return;
         }
 
         const reviewIndex = book.Reviews.findIndex(review => review.userName === username);
 
         if (reviewIndex === -1) {
-            res.status(404).json({ message: "Review not found for the specified user" });
+            res.json({ message: "Review not found for the specified user" });
             return;
         }
 
@@ -256,7 +256,7 @@ app.put("/modify-review/:ISBN", authenticateJWT, (req, res) => {
         res.json({ message: "Review modified successfully", updatedReview: book.Reviews[reviewIndex] });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.json({ error: 'Internal Server Error' });
     }
 });
 
@@ -275,7 +275,7 @@ app.delete("/delete-comment/:ISBN", authenticateJWT, (req, res) => {
         const reviewIndex = book.Reviews.findIndex(review => review.userName === username);
 
         if (reviewIndex === -1) {
-            res.status(404).json({ message: "Review not found for the specified user" });
+            res.json({ message: "Review not found for the specified user" });
             return;
         }
 
@@ -284,7 +284,7 @@ app.delete("/delete-comment/:ISBN", authenticateJWT, (req, res) => {
         res.json({ message: "Comment deleted successfully" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.json({ error: 'Internal Server Error' });
     }
 });
 
