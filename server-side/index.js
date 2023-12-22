@@ -50,7 +50,7 @@ const shop = [
         ]
        },
        {
-        ISBN: "978-0-123435-5",
+        ISBN: "978-0-123435-6",
         Title: "Shot for Mercy",
         Author: "Shahzaib",
         Reviews: [
