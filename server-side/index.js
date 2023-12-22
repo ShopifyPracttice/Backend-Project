@@ -86,24 +86,57 @@ app.get("/all-books", async (req, res) => {
     }
 });
 
-app.get("/book-detail",  (req, res)=>{
+app.get("/book-detail/ISBN/:ISBN", (req, res) => {
+    const ISBNCode = req.params.ISBN;
+    const filterBooksByISBNPromise = new Promise((resolve, reject) => {
+        try {
+            let filteredBooks = [...shop];
+            if (ISBNCode) {
+                filteredBooks = filteredBooks.filter(book => book.ISBN === ISBNCode);
+            }
+            if (filteredBooks.length > 0) {
+                resolve(filteredBooks);
+            } else {
+                reject({ message: "No matching books found" });
+            }
+        } catch (err) {
+            reject(err);
+        }
+    });
+    filterBooksByISBNPromise
+        .then(data => res.json(data))
+        .catch(err => {
+            console.error(err);
+        });
+});
+
+app.get("/book-detail/title",  (req, res)=>{
     try{
-        const authorName = req.query.author;
-        const titleName = req.query.title;
-        const ISBNCode = req.query.ISBN;
+        const title = req.query.title;
 
         let filteredBooks = [...shop];
 
-        if (authorName) {
-            filteredBooks = filteredBooks.filter(book => book.Author === authorName);
+        if (title) {
+            filteredBooks = filteredBooks.filter(book => book.Title === title);
         }
 
-        if (titleName) {
-            filteredBooks = filteredBooks.filter(book => book.Title === titleName);
+        if (filteredBooks.length > 0) {
+            res.json(filteredBooks);
+        } else {
+            res.json({ message: "No matching books found" });
         }
+    }catch(err){
+        console.error(err);
+    }
+} )
+app.get("/book-detail/author",  (req, res)=>{
+    try{
+        const author = req.query.author;
 
-        if (ISBNCode) {
-            filteredBooks = filteredBooks.filter(book => book.ISBN === ISBNCode);
+        let filteredBooks = [...shop];
+
+        if (author) {
+            filteredBooks = filteredBooks.filter(book => book.Author === author);
         }
 
         if (filteredBooks.length > 0) {
